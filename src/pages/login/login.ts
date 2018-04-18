@@ -67,39 +67,4 @@ export class LoginPage {
       //console.error(err);
     }
   }
-
-  facebookLogin(){
-    this.facebook.login(['email']).then( (response) => {
-        const facebookCredential = firebase.auth.FacebookAuthProvider
-            .credential(response.authResponse.accessToken);
-
-        firebase.auth().signInWithCredential(facebookCredential)
-        .then((success) => { 
-            let sAlert = this.alertCtrl.create({
-              title: 'Firebase success: ' + JSON.stringify(success),
-              buttons: ['OK']
-            });
-            //console.log("Firebase success: " + JSON.stringify(success));
-            sAlert.present();
-            this.user = success;
-            this.navCtrl.push(HomePage);
-        })
-        .catch((error) => {
-          let fAlert = this.alertCtrl.create({
-            title: 'Firebase failure: ' + JSON.stringify(error),
-            buttons: ['OK']
-          });  
-          fAlert.present();
-          //console.log("Firebase failure: " + JSON.stringify(error));
-        });
-
-    }).catch((error) => { 
-      let eAlert = this.alertCtrl.create({
-        title: error,
-        buttons: ['OK']
-      });
-      eAlert.present();
-      //console.log(error) 
-    });
-}
 }

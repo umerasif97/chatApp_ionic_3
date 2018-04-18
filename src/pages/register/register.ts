@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { LoginPage } from '../login/login';
 import { AlertController } from 'ionic-angular';
+import { FirebaseListObservable, AngularFireDatabase } from 'angularfire2/database-deprecated';
+import { Camera, CameraOptions } from '@ionic-native/camera';
 
 /**
  * Generated class for the RegisterPage page.
@@ -14,6 +16,8 @@ import { AlertController } from 'ionic-angular';
 export class User {
   email: string;
   password: string;
+  username: string;
+  imageURL;
 }
 
 @IonicPage()
@@ -25,11 +29,63 @@ export class User {
 export class RegisterPage {
 
   public user:User = new User();
+  dbUser: FirebaseListObservable<any[]>;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public fAuth: AngularFireAuth,
-              public alertCtrl: AlertController){
+              public alertCtrl: AlertController,
+              public db: AngularFireDatabase,
+              private camera: Camera){
+                this.dbUser = db.list('/users');
+  }
+
+  guid() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+      s4() + '-' + s4() + s4() + s4();
+  }
+
+  takePhoto() {
+
+    const options: CameraOptions = {
+      sourceType: this.camera.PictureSourceType.CAMERA,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE
+      //      targetWidth: 1000,
+      //      targetHeight: 1000
+    }
+
+    this.camera.getPicture(options).then((imageData) => {
+      // imageData is a base64 encoded string
+      this.user.imageURL = "data:image/jpeg;base64," + imageData;
+    }, (err) => {
+      console.log(err);
+    });
+
+  }
+
+
+  accessGallery() {
+    this.camera.getPicture({
+      sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
+      destinationType: this.camera.DestinationType.DATA_URL
+    }).then((imageData) => {
+      this.user.imageURL = 'data:image/jpeg;base64,' + imageData;
+      console.log(this.user.imageURL);
+    }, (err) => {
+      // let errAlert = this.alertCtrl.create({
+      //   title: err,
+      //   buttons: ['OK']
+      // });
+      // errAlert.present();
+      console.log(err);
+    });
   }
 
 
@@ -45,7 +101,17 @@ export class RegisterPage {
           buttons: ['OK']
         });
         basicAlert.present();
-        this.navCtrl.push(LoginPage);
+        this.dbUser.push({
+          id: this.guid(),
+          email: this.user.email,
+          username: this.user.username,
+          //image: this.user.imageURL
+        })
+        this.user.email = '';
+        this.user.password = '';
+        this.user.username = '';
+        this.user.imageURL = '';
+        //this.navCtrl.push(LoginPage);
       }
 
     } catch (err) {
@@ -56,4 +122,4 @@ export class RegisterPage {
       basicAlert.present();
     }
   }
-} 
+}

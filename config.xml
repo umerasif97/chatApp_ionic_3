@@ -86,4 +86,5 @@
         <variable name="APP_ID" value="576134629428864" />
         <variable name="APP_NAME" value="chatApp" />
     </plugin>
+    <plugin name="cordova-plugin-camera" spec="^4.0.2" />
 </widget>

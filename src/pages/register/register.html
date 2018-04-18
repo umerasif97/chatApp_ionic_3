@@ -6,13 +6,30 @@
 
 <ion-content padding>
   <ion-item>
-    <ion-label>Email Address</ion-label>
+    <ion-label>Email Address:</ion-label>
     <ion-input type="text" [(ngModel)]="user.email"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label>Password</ion-label>
+    <ion-label>Password:</ion-label>
     <ion-input type="password" [(ngModel)]="user.password"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Username:</ion-label>
+    <ion-input type="text" [(ngModel)]="user.username"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Profile Picture: </ion-label>
+    <!-- <ion-input type="text" [(ngModel)]="picture"></ion-input> -->
+    <ion-img style="width: 80px; height: 80px;" [src]="user.imageURL"></ion-img>
+    <button ion-button icon-only item-end color="light" (click)="accessGallery()">
+      <ion-icon name="md-add" color="dark"></ion-icon>
+    </button>
+    <button ion-button icon-only item-end color="light" (click)="takePhoto()">
+      <ion-icon name="ios-camera" color="dark"></ion-icon>
+    </button>
   </ion-item>
 
   <ion-row>

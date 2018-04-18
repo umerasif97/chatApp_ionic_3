@@ -1,14 +1,21 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-navbar>
+  <ion-toolbar>
+    <ion-buttons>
+      <button ion-button icon-only (click)="logout()" float-right>
+        <ion-icon name="md-log-out" color="dark"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title style="text-align: center">ONLINE USERS</ion-title>
+  </ion-toolbar>
 </ion-header>
-
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+<ion-content>
+  <ion-list>
+      <ion-item *ngFor="let user of dbUser | async" (click)="chat(user)">
+        <ion-avatar item-start>
+          <img [src]="user.picture" style="width: 75px; height: 75px;">
+        </ion-avatar>
+        <h2>NAME: {{ user.username }}</h2>
+        <p>Email Address: {{ user.email }}</p>
+      </ion-item>
+  </ion-list>
 </ion-content>

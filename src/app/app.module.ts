@@ -7,35 +7,49 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { AngularFireModule, FirebaseApp } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated/';
 
+import { Camera } from '@ionic-native/camera';
+
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { LoginPage } from '../pages/login/login';
+import { RegisterPage } from '../pages/register/register';
+import { ChatPage } from '../pages/chat/chat';
 
-var config = {
-  apiKey: "AIzaSyDnXttMV4eWyePFLtZpPsmIZ4YI_ueyx-o",
-  authDomain: "practice-ae3c6.firebaseapp.com",
-  databaseURL: "https://practice-ae3c6.firebaseio.com",
-  projectId: "practice-ae3c6",
-  storageBucket: "practice-ae3c6.appspot.com",
-  messagingSenderId: "292749602225"
-};
+  var config = {
+    apiKey: "AIzaSyChqoA_jQ1ZivRCIZUkzPqamiT2TJitwjA",
+    authDomain: "chatapp-2e661.firebaseapp.com",
+    databaseURL: "https://chatapp-2e661.firebaseio.com",
+    projectId: "chatapp-2e661",
+    storageBucket: "chatapp-2e661.appspot.com",
+    messagingSenderId: "599503822826"
+  };
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    HomePage,
+    LoginPage,
+    RegisterPage,
+    ChatPage
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    AngularFireModule.initializeApp(config),
+    AngularFireDatabaseModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    LoginPage,
+    RegisterPage,
+    ChatPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
+    Camera,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

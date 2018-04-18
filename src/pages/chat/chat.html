@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="text-align: center">{{ user?.username }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngFor="let msg of allMessagesArray">
+    
+
+</ion-content>
+
+<ion-footer ion-fixed>    
+  <ion-toolbar class="no-border" color="white">        
+    <ion-input [(ngModel)]="newMessage" placeholder="Write your message ..."></ion-input>  
+    <ion-buttons end>
+      <button ion-button (click)="sendMessage(user.email)">send</button>
+    </ion-buttons>
+  </ion-toolbar>    
+</ion-footer>
