@@ -1,19 +1,30 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons>
+      <button ion-button icon-only (click)="logout()" float-right>
+        <ion-icon name="md-log-out"></ion-icon>
+      </button>
+      <button ion-button icon-start (click)="back()" float-left>
+        <ion-icon name="arrow-back"></ion-icon>Back
+      </button>
+    </ion-buttons>
     <ion-title style="text-align: center">{{ user?.username }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngFor="let msg of allMessagesArray">
-    
-
+<ion-content>
+  <ion-item *ngFor="let chat of list">
+    <ion-list>
+      <p>{{chat.text_data}}</p>
+    </ion-list>
+  </ion-item>
 </ion-content>
 
-<ion-footer ion-fixed>    
-  <ion-toolbar class="no-border" color="white">        
-    <ion-input [(ngModel)]="newMessage" placeholder="Write your message ..."></ion-input>  
+<ion-footer ion-fixed>
+  <ion-toolbar class="no-border" color="white">
+    <ion-input [(ngModel)]="newMessage" placeholder="Write your message ..."></ion-input>
     <ion-buttons end>
       <button ion-button (click)="sendMessage(user.email)">send</button>
     </ion-buttons>
-  </ion-toolbar>    
+  </ion-toolbar>
 </ion-footer>

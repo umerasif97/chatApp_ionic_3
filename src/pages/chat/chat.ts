@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { FirebaseListObservable, AngularFireDatabase } from 'angularfire2/database-deprecated';
 import * as firebase from 'firebase/app';
 import * as _ from "lodash";
+import { LoginPage } from '../login/login';
+import { HomePage } from '../home/home';
 
 /**
  * Generated class for the ChatPage page.
@@ -19,14 +21,15 @@ import * as _ from "lodash";
 export class ChatPage {
 
   users: FirebaseListObservable<any[]>;
-  user = {id: '',email: '', username: ''};
-  fromMessages = [];
-  allMessagesArray = [];
-  allMessages = {};
-  messages: FirebaseListObservable<any[]>;
-  infoMessages;
+  user = { id: '', email: '', username: '' };
+  // fromMessages = [];
+  // toMessages = [];
+  allRoomArray = [];
+  allRoom = {};
+  room = [];
+  infoRoom;
   newMessage;
-  msgs = [];
+  list = [];
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -37,30 +40,33 @@ export class ChatPage {
     this.user.username = this.navParams.get('username');
 
     let self = this;
-    this.infoMessages = firebase.database().ref('/rooms').on('value', function (snapshot) {
-      self.allMessages = snapshot.val();
-      console.log(self.allMessages);
-      for (var key in self.allMessages) {
-        self.allMessages[key]['key'] = key;
-        self.allMessagesArray.push(self.allMessages[key])
-        console.log(self.allMessages[key]);
+    this.infoRoom = firebase.database().ref('/rooms').on('value', function (snapshot) {
+      self.allRoom = snapshot.val();
+      //console.log(self.allMessages);
+      for (var key in self.allRoom) {
+        self.allRoom[key]['key'] = key;
+        self.allRoomArray.push(self.allRoom[key])
+        if (self.allRoom[key].to == self.user.email && self.allRoom[key].from || firebase.auth().currentUser.email && self.allRoom[key].to == firebase.auth().currentUser.email && self.allRoom[key].from == self.user.email) {
+          self.room.push(self.allRoom[key].msgs)
+        }
       }
+      self.list = Object.keys(self.allRoom[key].msgs);
+      console.log(self.list);
+      console.log(self.room);
+      //console.log(self.allMessagesArray);
     });
   }
 
   ionViewDidLoad() {
-    this.getMessages();
     console.log('ionViewDidLoad ChatPage');
   }
 
-  getMessages(){
-    for (var key in this.allMessages) {
-      if(this.allMessages[key].to == this.user.email  && this.allMessages[key].from == firebase.auth().currentUser.email){
-        this.allMessages[key]['key'] = key;
-        this.fromMessages.push(this.allMessages[key])
-        console.log(this.allMessages[key]);
-      }
-    }
+  logout() {
+    this.navCtrl.setRoot(LoginPage);
+  }
+
+  back() {
+    this.navCtrl.setRoot(HomePage);
   }
 
   guid() {
@@ -74,23 +80,25 @@ export class ChatPage {
   }
 
   sendMessage(to) {
-    
-    this.msgs = [{ msgId: this.guid() , text_data: this.newMessage, time: Date() }];
+
+    let msgs = [{ msgId: this.guid(), text_data: this.newMessage, time: Date(), from: firebase.auth().currentUser.email, to: to }];
     // console.log(this.allMessagesArray);
-    let a = _.findIndex(this.allMessagesArray, ['to', to]);
+    let a = _.findIndex(this.allRoomArray, ['to', to]);
     console.log(a);
-    if (a > -1) { 
-      this.db.list('/rooms/' + this.allMessagesArray[a].key + '/msgs').push({
+    if (a > -1) {
+      this.db.list('/rooms/' + this.allRoomArray[a].key + '/msgs').push({
         msgId: this.guid(),
         text_data: this.newMessage,
-        time: Date()
-          });
+        time: Date(),
+        from: firebase.auth().currentUser.email,
+        to: to
+      });
     } else {
       this.db.list('/rooms').push({
         id: this.guid(),
         from: firebase.auth().currentUser.email,
         to: to,
-        msgs: this.msgs
+        msgs: msgs
       })
     }
     this.newMessage = '';
