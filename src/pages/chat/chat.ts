@@ -4,7 +4,7 @@ import { FirebaseListObservable, AngularFireDatabase } from 'angularfire2/databa
 import * as firebase from 'firebase/app';
 import * as _ from "lodash";
 import { LoginPage } from '../login/login';
-import { HomePage } from '../home/home';
+import { HomePage } from '../home/home';  
 
 /**
  * Generated class for the ChatPage page.
@@ -27,9 +27,9 @@ export class ChatPage {
   allRoomArray = [];
   allRoom = {};
   room = [];
+  msgs = [{ msgId: '', text_data: '', time: '', from: '', to: '' }];
   infoRoom;
   newMessage;
-  list = [];
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -42,19 +42,17 @@ export class ChatPage {
     let self = this;
     this.infoRoom = firebase.database().ref('/rooms').on('value', function (snapshot) {
       self.allRoom = snapshot.val();
-      //console.log(self.allMessages);
+      //console.log(self.allRoom)
       for (var key in self.allRoom) {
         self.allRoom[key]['key'] = key;
         self.allRoomArray.push(self.allRoom[key])
-        if (self.allRoom[key].to == self.user.email && self.allRoom[key].from || firebase.auth().currentUser.email && self.allRoom[key].to == firebase.auth().currentUser.email && self.allRoom[key].from == self.user.email) {
-          self.room.push(self.allRoom[key].msgs)
+        if (self.allRoom[key].user1 == self.user.email || self.allRoom[key].user1 == firebase.auth().currentUser.email && self.allRoom[key].user2 == self.user.email || self.allRoom[key].user2 == firebase.auth().currentUser.email) {
+          self.room.push(self.allRoom[key])
         }
       }
-      self.list = Object.keys(self.allRoom[key].msgs);
-      console.log(self.list);
-      console.log(self.room);
-      //console.log(self.allMessagesArray);
+      // console.log(self.allRoomArray);
     });
+    console.log(self.room);
   }
 
   ionViewDidLoad() {
@@ -69,6 +67,7 @@ export class ChatPage {
     this.navCtrl.setRoot(HomePage);
   }
 
+
   guid() {
     function s4() {
       return Math.floor((1 + Math.random()) * 0x10000)
@@ -79,29 +78,37 @@ export class ChatPage {
       s4() + '-' + s4() + s4() + s4();
   }
 
-  sendMessage(to) {
+  sendMessage(user_email) {
 
-    let msgs = [{ msgId: this.guid(), text_data: this.newMessage, time: Date(), from: firebase.auth().currentUser.email, to: to }];
-    // console.log(this.allMessagesArray);
-    let a = _.findIndex(this.allRoomArray, ['to', to]);
-    console.log(a);
-    if (a > -1) {
-      this.db.list('/rooms/' + this.allRoomArray[a].key + '/msgs').push({
-        msgId: this.guid(),
-        text_data: this.newMessage,
-        time: Date(),
-        from: firebase.auth().currentUser.email,
-        to: to
+    this.msgs = [{ msgId: this.guid(), text_data: this.newMessage, time: Date(), from: firebase.auth().currentUser.email, to: user_email }];
+    if (this.allRoomArray.length > 0) {
+      let a = _.findIndex(this.allRoomArray, function (o) {
+        return ((firebase.auth().currentUser.email == o.user1 || firebase.auth().currentUser.email == o.user2) && (user_email == o.user1 || user_email == o.user2))
       });
+      if (a > -1) {
+        this.db.list('/rooms/' + this.allRoomArray[a].key + '/msgs').push({
+          msgId: this.guid(),
+          text_data: this.newMessage,
+          time: Date(),
+          from: firebase.auth().currentUser.email,
+          to: user_email
+        });
+      } else {
+        this.db.list('/rooms').push({
+          id: this.guid(),
+          user1: firebase.auth().currentUser.email,
+          user2: user_email,
+          msgs: this.msgs
+        });
+      }
     } else {
       this.db.list('/rooms').push({
         id: this.guid(),
-        from: firebase.auth().currentUser.email,
-        to: to,
-        msgs: msgs
-      })
+        user1: firebase.auth().currentUser.email,
+        user2: user_email,
+        msgs: this.msgs
+      });
     }
     this.newMessage = '';
   }
 }
-
