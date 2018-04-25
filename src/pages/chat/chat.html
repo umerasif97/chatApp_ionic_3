@@ -13,11 +13,11 @@
 </ion-header>
 
 <ion-content>
-  <ion-list >
-    <ion-item >
-      <p>{{room}}</p>
-    </ion-item>
-  </ion-list>
+    <div class="message" *ngFor = "let chat of room">
+      <div [class]='chat.from == currentUser ? "innerMessage messageRight" : "innerMessage messageLeft" ' >
+          <div class="message">{{chat.text_data}}</div>
+      </div>
+  </div>
 </ion-content>
 
 <ion-footer ion-fixed>

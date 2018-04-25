@@ -5,6 +5,7 @@ import { LoginPage } from '../login/login';
 import { AlertController } from 'ionic-angular';
 import { FirebaseListObservable, AngularFireDatabase } from 'angularfire2/database-deprecated';
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import * as firebase from 'firebase/app';
 
 /**
  * Generated class for the RegisterPage page.
@@ -14,10 +15,12 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
  */
 
 export class User {
+  id: string;
   email: string;
   password: string;
   username: string;
   imageURL;
+  status: string;
 }
 
 @IonicPage()
@@ -102,16 +105,17 @@ export class RegisterPage {
         });
         basicAlert.present();
         this.dbUser.push({
-          id: this.guid(),
+          id: firebase.auth().currentUser.uid,
           email: this.user.email,
           username: this.user.username,
-          //image: this.user.imageURL
+          //image: this.user.imageURL,
+          status: false
         })
         this.user.email = '';
         this.user.password = '';
         this.user.username = '';
         this.user.imageURL = '';
-        //this.navCtrl.push(LoginPage);
+        this.navCtrl.pop();
       }
 
     } catch (err) {

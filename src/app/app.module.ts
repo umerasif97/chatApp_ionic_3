@@ -14,6 +14,10 @@ import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { RegisterPage } from '../pages/register/register';
 import { ChatPage } from '../pages/chat/chat';
+import { LoginProvider } from '../providers/login/login';
+
+import { HttpClientModule } from '@angular/common/http'; 
+import { HttpModule } from '@angular/http';
 
   var config = {
     apiKey: "AIzaSyChqoA_jQ1ZivRCIZUkzPqamiT2TJitwjA",
@@ -37,6 +41,8 @@ import { ChatPage } from '../pages/chat/chat';
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(config),
     AngularFireDatabaseModule,
+    HttpModule,
+    HttpClientModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -50,7 +56,8 @@ import { ChatPage } from '../pages/chat/chat';
     StatusBar,
     SplashScreen,
     Camera,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    LoginProvider
   ]
 })
 export class AppModule {}
