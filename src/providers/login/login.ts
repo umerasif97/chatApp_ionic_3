@@ -23,39 +23,29 @@ export class LoginProvider {
 
   }
 
+  logout() {
+    this.db.object('/users/' + localStorage.getItem('key')).update({
+      status: 'offline'
+    });
+    localStorage.clear();
+    this.navCtrl.setRoot(LoginPage);
+  }
+
   updateStatus(email) {
     let self = this;
     this.infoUser = firebase.database().ref('/users').on('value', function (snapshot) {
       self.allUser = snapshot.val();
-      //console.log(self.allRoom)
+      //console.log(self.allUser)
       for (var key in self.allUser) {
         self.allUser[key]['key'] = key;
-        self.allUserArray.push(self.allUser[key])
-        }
-        if(self.allUser[key].email == email){
+        //self.allUserArray.push(self.allUser[key])
+        if (self.allUser[key].email == email) {
           localStorage.setItem('key', self.allUser[key].key);
-          self.db.object('/users/' + self.allUser[key].key).update({
-            status: true
-          });
+        }
       }
-    //   if (self.allUserArray.length > 0) {
-    //     let a = _.findIndex(self.allUserArray, function (o) {
-    //       if (o.email == email) {
-    //         localStorage.setItem('key', o.key);
-    //         self.db.object('/users/' + o.key).update({
-    //           status: true
-    //         });
-    //       }
-    //     });
-    //   }
-     });
-  }  
-
-  logout() {
-    this.db.object('/users/' + localStorage.getItem('key')).update({
-      status: false
     });
-    localStorage.clear(); 
-    this.navCtrl.setRoot(LoginPage);
+    self.db.object('/users/' + localStorage.getItem('key')).update({
+      status: 'online'
+    });
   }
 }

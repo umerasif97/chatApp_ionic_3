@@ -29,11 +29,11 @@ export class ChatPage {
   allRoomArray = [];
   allRoom = {};
   room;
-  roomMsgs = [];
+  //roomMsgs = [];
   msgs = [{ msgId: '', text_data: '', time: '', from: '', to: '' }];
   infoRoom;
   newMessage;
-  key;
+  //key;
   currentUser = firebase.auth().currentUser.email;
 
   constructor(public navCtrl: NavController,

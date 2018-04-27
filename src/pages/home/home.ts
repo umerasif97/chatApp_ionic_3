@@ -20,7 +20,7 @@ export class HomePage {
               public db: AngularFireDatabase,
               public loginService: LoginProvider) {
    this.dbUser = db.list('/users');
-   this.currentUser = firebase.auth().currentUser.email;
+   //this.currentUser = firebase.auth().currentUser.email;
    //console.log(this.dbUser);
   }
 
