@@ -108,7 +108,7 @@ export class RegisterPage {
           id: firebase.auth().currentUser.uid,
           email: this.user.email,
           username: this.user.username,
-          //image: this.user.imageURL,
+          image: this.user.imageURL,
           status: false
         })
         this.user.email = '';

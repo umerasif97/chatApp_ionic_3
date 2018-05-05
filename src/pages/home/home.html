@@ -17,6 +17,7 @@
         <h2>NAME: {{ user.username }}</h2>
         <p>Email Address: {{ user.email }}</p>
         <p>Status: {{ user.status }}</p>
+        <span class="dot" *ngIf="user.status == 'online'" item-end></span>
       </ion-item>
   </ion-list>
 </ion-content>

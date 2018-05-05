@@ -87,4 +87,5 @@
         <variable name="APP_NAME" value="chatApp" />
     </plugin>
     <plugin name="cordova-plugin-camera" spec="^4.0.2" />
+    <engine name="android" spec="^7.0.0" />
 </widget>
